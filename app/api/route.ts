@@ -1,38 +1,29 @@
+import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export function GET(){
-
-    console.log("Get request received");
-    return NextResponse.json({
-        message : "Get request received in to /api"
-    })
-    
-}
 
 export async function POST(req : NextRequest){
+    
     const body = await req.json()
 
-    const message = "Good morning "+body.designation+" "+body.student+" Welcome to the "+body.subject+" class"
-
-    console.log(message);
-
-    return NextResponse.json(
+    await prisma.student.create(
         {
-            welcomeNote : message
+            data : {
+                name : body.name,
+                age : body.age,
+                city : body.city
+            }
         }
     )
 
-}
-
-
-export function PUT(){
-
-    console.log("Put request received");
+    return NextResponse.json({message : "Student created successfully"})
 
 }
 
-export function DELETE(){
+export async function GET(req : NextRequest){
 
-    console.log("Delete request received");
+    const students = await prisma.student.findMany()
+
+    return NextResponse.json(students)
 
 }
